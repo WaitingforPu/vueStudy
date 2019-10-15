@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        
+        <h1>绑定</h1>
+        {{message}}
+        <hr>
+
+        <h1>条件与循环</h1>
+        <div v-if="seen">你真的可以看到我嘛--if</div>
+        <div v-show="seen">你真的可以看到我嘛--show</div>
+        <ol>
+            <li v-for="(item,index) in listDemo">{{item}}{{index}}</li>
+        </ol>
+        <hr>
+
+        <h1>处理用户输入</h1>
+        <button @click="demoClick()">点击事件</button>
+        <button v-on:click="demoClick()">点击事件</button>
+        <hr>
+
+        <h1>双向绑定</h1>
+        <div>{{inputData}}</div>
+        <input type="text" v-model="inputData">
+
+        <hr>
+        <h1>组件化应用构建</h1>
+        <todo-item v-for="item in groceryLijhiyjist" v-bind:todo="item" v-bind:key="item.id"></todo-item>
+
+        <hr>
+        <h1>特性</h1>
+        Mustache【{{}}】语法不能作用在HTML特性上，遇到这种情况应该使用V-bind指令
+        <div v-bind:id="message">特性绑定</div>
+
+        <hr>
+        <h1>计算属性VS侦听属性</h1>
+        <div id="demo">{{fullName}}</div>
+
+        <hr>
+        <h1>侦听器</h1>
+        <input type="text" v-model="watchInput">
+
+        <!-- 用Key管理可复用的元素 -->
+        <!-- 多套样式切换使用一个input
+        当业务需求要切换样式input清空时候
+        则需要在input上绑定key来区分 -->
+
+        <!-- 多选按钮 -->
+        <hr>
+        <input type="checkbox"  id="jack" value="jack" v-model="checkboxNames">
+        <input type="checkbox" value="mike" v-model="checkboxNames">
+        <input type="checkbox" value="John" v-model="checkboxNames">
+        <div>{{checkboxNames}}</div>
+
+        <hr>
+        <h1>组件基础</h1>
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+
+        <hr>
+        <h1>通过Prop向子组件传递数据</h1>
+        <h2>一个组件默认可以拥有任意熟练度prop，任何值都可以传递给任何prop。在上述模板中，你会发现我们能够在组件实力中访问这个值，就像访问data中的值一样</h2>
+        <blog-post title="123" id="456" targetdata="99" v-on:text-demo="demoClick()"></blog-post>
+
+        <hr>
+        <h1>For循环组件</h1>
+        <blog-post v-for="item in posts" v-bind:key="item.id" v-bind:title="item.title"></blog-post>
+        <!-- 组件事件监听 -->
+        <hr>
+
+        <h5>
+            调用组件时
+            v-on:一种绑定事件的写法，可以用@click代替
+            text-demo   自定义的一个事件
+            自定义事件值就写个父级的methods内的方法
+
+            组件内监听的写法
+            $emit('自定义的事件名字，此处就是text-demo')
+
+            $emit 发出的意思
+            $emit("事件名字","$event[拿到的模板传递数据]")
+        </h5>
+        <blog-post title="123" id="456" targetdata="99" v-on:text-demo="demoClick($event)"></blog-post>
+        <hr>
+
+        <h1>在组件上使用v-model</h1>
+        <input v-model="searchText">
+        <hr>
+
+        <h1>通过插槽分发内容</h1>
+        <blog-post>
+            hdweufhweufow
+        </blog-post>
+        <hr>
+
+        <h1>全局组件注册</h1>
+        <component-a></component-a>
+        <component-b></component-b>
+        <component-c></component-c>
+        <hr>
+
+        <h1>局部注册</h1>
+        <h5>全局注册往往是不够理想的，比如如果你使用一个像webpack这样的
+            构建系统，全局注册所有的组件以为这即便你已经不再使用一个组件了，
+            它仍然会被包含在你最终的构建结果中，这就造成了用户下载JavaScript的无畏增加
+        </h5>
+        <component-z></component-z>
+    </div>
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="vue.js"></script>
+    <script>
+
+        // 组件注册
+        Vue.component('component-a', { 
+            template:"<li>组件注册a</li>"
+        });
+
+        Vue.component('component-b', { 
+            template:"<li>组件注册a</li>"
+        });
+
+        Vue.component('component-c', {
+            template:"<li>组件注册a</li>"
+        });
+
+        // 创建一个todo模块
+        Vue.component("todo-item",{
+            props:['todo'],
+            template:"<li>这个是一个待办项{{todo.text}}</li>"
+        });
+
+        // 创建一个button-counter组件
+        Vue.component("button-counter",{
+            data:function(){
+                return {
+                    count:0
+                }
+            },
+            template:'<button v-on:click="count++">You clicked me {{count}}</button>'
+        });
+
+        //创建一个blog组件
+        Vue.component("blog-post",{
+            // 非指定类型
+            // props:["title","id","targetdata"],
+            // 指定类型
+            props:{
+                title:{
+                    type:String
+                },
+                id:{
+                    type:String
+                },
+                targetdata:{
+                    type:String
+                }
+            },
+            template:`<h3>
+            {{title}}{{id}}{{targetdata}}
+                <button v-on:click="$emit('text-demo','我是子组件啊')"> 我是子组件点击事件</button>
+                <slot></slot>
+            </h3>`
+        });
+
+        // 自定义事件
+        Vue.component("base-checkbox",{
+
+        })
+
+        // 局部注册-通过一个普通的JavaScript对象来来注册
+        var ComponentZ = {
+            template:"<h1>局部注册内容</h1>"
+        };
+        var app = new Vue({
+            el:"#app",
+            components:{
+                "component-z":ComponentZ
+            },
+            data:{
+                searchText:"",
+                checkboxNames:[], //多选框,类型必须为数组
+                watchInput:"",
+                firstName:"Foo",
+                lastName:"Barkkkk",
+                message:"我是测试啊",
+                seen:true,
+                inputData:"",
+                listDemo:[
+                    {
+                        a:"12"
+                    },{
+                        a:"12"
+                    },{
+                        a:"12"
+                    },{
+                        a:"12"
+                    },{
+                        a:"12"
+                    },
+                ],
+                groceryList:[
+                    {
+                        id:"0",
+                        text:"蔬菜"
+                    },
+                    {
+                        id:"2",
+                        text:"奶酪"
+                    },
+                    {
+                        id:"3",
+                        text:"想吃什么就吃什么"
+                    }
+                ],
+                posts:[
+                    {
+                        id:5555,title:"my width vue"
+                    },{
+                        id:244,title:"1hguhr1"
+                    },{
+                        id:344,title:"1ir11"
+                    }
+                ]
+            },
+            methods:{
+                demoClick:function(event){
+                    alert(event)
+                }
+            },
+            created:function(){
+                // 此处设置的优先级比data级别高
+                console.log(this.seen)
+                this.seen = false
+            },
+            watch:{
+                watchInput:function(newWatchInput,oldWatchInput){
+                    alert("触发")
+                }
+            },
+            computed:{
+                fullName:function(){
+                    return this.firstName + '' + this.lastName
+                },
+                groceryLijhiyjist:function(){
+                    return this.groceryList = [
+                    {
+                        id:"0",
+                        text:"蔬菜叶子"
+                    },
+                    {
+                        id:"2",
+                        text:"奶酪片"
+                    },
+                    {
+                        id:"3",
+                        text:"想吃什么就吃什么啊啊啊"
+                    }
+                ]
+                }
+            },
+
+        });
+
+    </script>
+</body>
+</html>
